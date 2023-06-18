@@ -4,7 +4,7 @@ spring:
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3307/petcare?characterEncoing=utf-8
+      url: jdbc:mysql://127.0.0.1:3307/petcare?characterEncoing=utf-8
       username: root
       password: fuji
 
