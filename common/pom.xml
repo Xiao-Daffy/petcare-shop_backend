@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>common</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
 <!--    Dependencies needed for common Maven project-->
     <dependencies>
