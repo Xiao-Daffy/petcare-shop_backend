@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.psm.petcare.dao.OrderItemDAO">
+
+
+
+<!--    <insert id="addPet">-->
+<!--        insert into pet(owner_id, owner_name, store_id, pet_age,pet_gender, pet_weight, pet_length, pet_speciese, pet_img, full_vaccine, create_time,update_time)-->
+<!--        values(#{ownerId},#{ownerName},#{storeId},#{age},#{petGender},#{petWeight},#{petLength},#{petSpeciese},#{petImg},#{fullVaccine},#{createTime},#{updateTime})-->
+<!--    </insert>-->
+
+    <insert id="insertOrderItem">
+        insert into order_item(item_id, order_id,store_id,product_id, product_name,
+                               product_img,product_price,buy_counts,total_amount,cart_date,buy_time,is_comment)
+        values(#{itemId},#{orderId},#{storeId},#{productId},#{productName},#{productImg},
+               #{productPrice},#{buyCounts},#{totalAmount},#{cartDate},#{buyTime},#{isComment})
+
+    </insert>
+
+
+    <resultMap id="orderItemMap" type="OrderItem">
+        <id column="item_id" property="itemId"/>
+        <result column="order_id" property="orderId"/>
+        <result column="store_id" property="storeId"/>
+        <result column="product_id" property="productId"/>
+        <result column="product_name" property="productName"/>
+        <result column="product_img" property="productImg"/>
+        <result column="product_price" property="productPrice"/>
+        <result column="buy_counts" property="buyCounts"/>
+        <result column="total_amount" property="totalAmount"/>
+        <result column="cart_date" property="cartDate"/>
+        <result column="buy_time" property="buyTime"/>
+        <result column="is_comment" property="isComment"/>
+    </resultMap>
+
+    <select id="getOrderItemByOrderId" resultMap="orderItemMap">
+        select item_id,order_id,store_id,product_id,product_name,
+               product_img,product_price,buy_counts,total_amount,
+               cart_date,buy_time,is_comment
+        from order_item
+        where order_id=#{orderId}
+    </select>
+
+
+    <select id="queryOrderItemByItemId" resultMap="orderItemMap">
+        select item_id,order_id,store_id,product_id,product_name,
+               product_img,product_price,buy_counts,total_amount,
+               cart_date,buy_time,is_comment
+        from order_item
+        where item_id=#{itemId}
+    </select>
+
+    <update id="updateOrderItemComment">
+        update order_item set is_comment=#{isComment} where item_id=#{itemId}
+    </update>
+</mapper>

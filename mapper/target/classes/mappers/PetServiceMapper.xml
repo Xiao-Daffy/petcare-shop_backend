@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.psm.petcare.dao.PetServiceDAO">
+
+
+
+<!--    <insert id="insertUser">-->
+<!--        insert into users(email, password, user_type, user_register_time)-->
+<!--        values(#{email},#{password},#{userType},#{userRegisterTime})-->
+<!--    </insert>-->
+
+    <insert id="insertPetService">
+
+        insert into pet_service(store_id,service_name,service_img,pet_size,price,service_duration,service_status,service_desc,create_time,update_time)
+        values (#{storeId},#{serviceName},#{serviceImg},#{petSize},#{price},#{duration},#{serviceStatus},#{serviceDesc},#{createTime},#{updateTime})
+    </insert>
+
+    <resultMap id="serviceMap" type="PetService">
+        <id column="service_id" property="serviceId"/>
+        <result column="store_id" property="storeId"/>
+        <result column="service_name" property="serviceName"/>
+        <result column="service_img" property="serviceImg"/>
+        <result column="pet_size" property="petSize"/>
+        <result column="price" property="price"/>
+        <result column="service_duration" property="duration"/>
+        <result column="service_status" property="serviceStatus"/>
+        <result column="service_desc" property="serviceDesc"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+<!--     combaination for pet service and store-->
+    <resultMap id="serviceVoMap" type="PetServiceVO">
+        <id column="service_id" property="serviceId"/>
+        <result column="store_id" property="storeId"/>
+        <result column="service_name" property="serviceName"/>
+        <result column="service_img" property="serviceImg"/>
+        <result column="pet_size" property="petSize"/>
+        <result column="price" property="price"/>
+        <result column="service_duration" property="duration"/>
+
+        <result column="service_desc" property="serviceDesc"/>
+
+
+<!--        store information-->
+        <result column="store_name" property="storeName"/>
+        <result column="state" property="state"/>
+        <result column="city" property="city"/>
+        <result column="address" property="address"/>
+    </resultMap>
+
+
+    <select id="listPetService" resultMap="serviceMap">
+        select service_id,store_id,service_name,service_img,pet_size,
+               price,service_duration,service_status,service_desc,
+               create_time,update_time
+        from pet_service
+        where store_id = #{storeId}
+    </select>
+    <select id="getPetService" resultMap="serviceMap">
+        select service_id,store_id,service_name,service_img,pet_size,
+               price,service_duration,service_status,service_desc,
+               create_time,update_time
+        from pet_service
+        where service_id = #{serviceId}
+    </select>
+
+    <select id="queryPetService" resultMap="serviceVoMap">
+        select p.service_id,p.store_id,p.service_name,p.service_img,p.pet_size,
+               p.price,p.service_duration,p.service_desc, s.store_name,s.state,s.city,s.address
+        from pet_service p
+        inner join store s
+        on p.store_id=s.store_id
+        where service_status = 1
+    </select>
+
+    <select id="queryAPetServiceByPid" resultMap="serviceVoMap">
+        select p.service_id,p.store_id,p.service_name,p.service_img,p.pet_size,
+               p.price,p.service_duration,p.service_desc, s.store_name,s.state,s.city,s.address
+        from pet_service p
+        inner join store s
+        on p.store_id=s.store_id
+        where p.service_id =#{serviceId}
+    </select>
+
+
+    <delete id="deleteService">
+        delete from pet_service
+        where service_id = #{serviceId}
+    </delete>
+
+
+    <update id="updateService">
+        update pet_service
+        <set>
+
+            <if test="serviceName !=null and serviceName !=''">
+                service_name = #{serviceName},
+            </if>
+            <if test="serviceImg !=null and serviceImg !=''">
+                service_img = #{serviceImg},
+            </if>
+            <if test="petSize !=null and petSize !=''">
+                pet_size = #{petSize},
+            </if>
+
+
+                price = #{price},
+
+                service_duration = #{duration},
+
+            service_status =#{serviceStatus},
+            <if test="serviceDesc !=null and serviceDesc !=''">
+                service_desc = #{serviceDesc},
+            </if>
+
+
+            update_time=#{updateTime},
+        </set>
+
+        <where>
+            service_id = #{serviceId}
+        </where>
+    </update>
+
+</mapper>

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.psm.petcare.dao.PetProductDAO">
+
+
+
+<!--    <insert id="addPet">-->
+<!--        insert into pet(owner_id, owner_name, store_id, pet_age,pet_gender, pet_weight, pet_length, pet_speciese, pet_img, full_vaccine, create_time,update_time)-->
+<!--        values(#{ownerId},#{ownerName},#{storeId},#{age},#{petGender},#{petWeight},#{petLength},#{petSpeciese},#{petImg},#{fullVaccine},#{createTime},#{updateTime})-->
+<!--    </insert>-->
+
+    <insert id="insertProduct">
+        insert into pet_product(store_id, product_name, actual_price,sale_price,product_status,
+                                product_desc1, product_made_place, product_period,
+                                brand, factory_name, factory_address, weight,storage_method,discount,
+                                stock,main_img, other_img, create_time, update_time)
+                    values(#{storeId},#{productName},#{actualPrice},#{salePrice},#{productStatus},#{productDesc1},
+                           #{madePlace},#{productPeriod},#{brand},#{factoryName},#{factoryAddress},
+                           #{weight},#{storageMethod},#{discount},#{stock},#{mainImg},#{otherImg},#{createTime},#{updateTime})
+
+    </insert>
+
+
+    <resultMap id="prodMap" type="PetProduct">
+        <id column="product_id" property="productId"/>
+        <result column="store_id" property="storeId"/>
+        <result column="product_name" property="productName"/>
+        <result column="actual_price" property="actualPrice"/>
+        <result column="sale_price" property="salePrice"/>
+        <result column="sold_num" property="soldNum"/>
+        <result column="product_status" property="productStatus"/>
+        <result column="product_desc1" property="productDesc1"/>
+
+        <result column="product_made_place" property="madePlace"/>
+        <result column="product_period" property="productPeriod"/>
+        <result column="brand" property="brand"/>
+        <result column="factory_name" property="factoryName"/>
+        <result column="factory_address" property="factoryAddress"/>
+        <result column="weight" property="weight"/>
+        <result column="storage_method" property="storageMethod"/>
+        <result column="discount" property="discount"/>
+        <result column="stock" property="stock"/>
+        <result column="main_img" property="mainImg"/>
+        <result column="other_img" property="otherImg"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <resultMap id="prodVOMap" type="PetProductVO">
+        <id column="product_id" property="productId"/>
+        <result column="store_id" property="storeId"/>
+        <result column="product_name" property="productName"/>
+        <result column="actual_price" property="actualPrice"/>
+        <result column="sale_price" property="salePrice"/>
+        <result column="sold_num" property="soldNum"/>
+        <result column="product_status" property="productStatus"/>
+        <result column="product_desc1" property="productDesc1"/>
+
+        <result column="product_made_place" property="madePlace"/>
+        <result column="product_period" property="productPeriod"/>
+        <result column="brand" property="brand"/>
+        <result column="factory_name" property="factoryName"/>
+        <result column="factory_address" property="factoryAddress"/>
+        <result column="weight" property="weight"/>
+        <result column="storage_method" property="storageMethod"/>
+        <result column="discount" property="discount"/>
+        <result column="stock" property="stock"/>
+        <result column="main_img" property="mainImg"/>
+        <result column="other_img" property="otherImg"/>
+        <result column="store_name" property="storeName"/>
+        <result column="state" property="state"/>
+        <result column="city" property="city"/>
+    </resultMap>
+
+    <select id="getListPetProduct" resultMap="prodMap">
+        select product_id, store_id, product_name, actual_price, sale_price,
+               sold_num, product_status, product_desc1,  product_made_place,
+               product_period, brand, factory_name, factory_address, weight,
+               storage_method, discount, stock, main_img, other_img,
+               create_time, update_time
+        from pet_product
+        where store_id = #{storeId}
+    </select>
+
+
+
+    <select id="queryProductById" resultMap="prodMap">
+        select product_id, store_id, product_name, actual_price, sale_price,
+               sold_num, product_status, product_desc1, product_made_place,
+               product_period, brand, factory_name, factory_address, weight,
+               storage_method, discount, stock, main_img, other_img,
+               create_time, update_time
+        from pet_product
+        where product_id = #{productId}
+    </select>
+
+    <select id="queryAllProduct" resultMap="prodVOMap">
+        select p.product_id, p.store_id, p.product_name, p.actual_price, p.sale_price,
+               p.main_img, s.store_name
+        from pet_product p
+        inner join store s
+        on p.store_id=s.store_id
+        where product_status = 1
+
+    </select>
+
+    <select id="queryProductByProductId" resultMap="prodVOMap">
+        select p.product_id, p.store_id, p.product_name, p.actual_price, p.sale_price,
+               p.sold_num, p.product_status, p.product_desc1, p.product_made_place,
+               p.product_period, p.brand, p.factory_name, p.factory_address, p.weight,
+               p.storage_method, p.discount, p.stock, p.main_img, p.other_img, s.store_name,
+               s.state, s.city
+        from pet_product p
+        inner join store s
+        on p.store_id=s.store_id
+        where product_id = #{productId}
+    </select>
+
+    <select id="selectNewProducts" resultMap="prodVOMap">
+        select p.product_id, p.store_id, p.product_name, p.actual_price, p.sale_price,
+               p.main_img, s.store_name
+        from pet_product p
+        inner join store s
+        on p.store_id=s.store_id
+        where product_status = 1
+        order by p.create_time desc
+        limit 3;
+    </select>
+
+
+    <delete id="deleteProduct">
+        delete from pet_product
+        where product_id = #{productId}
+    </delete>
+
+    <update id="updateStockById">
+        update pet_product set stock = #{stock}  where product_id = #{productId}
+    </update>
+
+    <update id="updateProduct">
+        update pet_product
+        <set>
+
+            <if test="productName !=null and productName !=''">
+                product_name = #{productName},
+            </if>
+            <if test="actualPrice !=0.0">
+                actual_price = #{actualPrice},
+            </if>
+
+            <if test="productStatus ==1 or productStatus ==2">
+                product_status = #{productStatus},
+            </if>
+            <if test="productDesc1 !=null and productDesc1 !=''">
+                product_desc1 = #{productDesc1},
+            </if>
+
+
+
+
+            <if test="madePlace !=null and madePlace !=''">
+                product_made_place = #{madePlace},
+            </if>
+
+            <if test="productPeriod !=null and productPeriod !=''">
+                product_period = #{productPeriod},
+            </if>
+
+            <if test="brand !=null and brand !=''">
+                brand = #{brand},
+            </if>
+
+            <if test="factoryName !=null and factoryName !=''">
+                factory_name = #{factoryName},
+            </if>
+
+            <if test="factoryAddress !=null and factoryAddress !=''">
+                factory_address = #{factoryAddress},
+            </if>
+
+            <if test="weight !=null and weight !=''">
+                weight = #{weight},
+            </if>
+
+            <if test="storageMethod !=null and storageMethod !=''">
+                storage_method = #{storageMethod},
+            </if>
+
+            <if test="discount !=0.0">
+                discount = #{discount},
+            </if>
+            sale_price = actual_price * (discount/10),
+
+
+            <if test="stock !=0">
+                stock = #{stock},
+            </if>
+
+            <if test="mainImg !=null and mainImg !=''">
+                main_img = #{mainImg},
+            </if>
+
+            <if test="otherImg !=null and otherImg !=''">
+                other_img = #{otherImg},
+            </if>
+
+            update_time=#{updateTime},
+        </set>
+
+        <where>
+            product_id = #{productId}
+        </where>
+    </update>
+</mapper>

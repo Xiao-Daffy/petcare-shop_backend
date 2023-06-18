@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.psm.petcare.dao.UserAddressDAO">
+
+    <resultMap id="addressMapper" type="UserAddress">
+        <id column="addr_id" property="addrId"/>
+        <result column="user_id" property="userId"/>
+        <result column="receiver_name" property="receiverName"/>
+        <result column="receiver_mobile" property="receiverMobile"/>
+        <result column="state" property="state"/>
+        <result column="city" property="city"/>
+        <result column="address" property="address"/>
+        <result column="post_code" property="postCode"/>
+        <result column="default_addr" property="defaultAddr"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+
+    </resultMap>
+
+    <select id="listAddress" resultMap="addressMapper">
+        select addr_id,user_id, receiver_name,receiver_mobile, state, city,
+               address, post_code,default_addr, create_time, update_time
+        from user_address
+        where user_id=#{userId}
+        order by default_addr desc
+    </select>
+
+<!--    <update id="updateAddress">-->
+<!--        update user_address-->
+<!--        set receiver_name = #{receiverName} where addr_id =#{addrId}-->
+<!--    </update>-->
+
+
+    <delete id="deleteAddress">
+
+        delete from user_address
+        where addr_id = #{addrId}
+
+    </delete>
+
+
+<!--    <insert id="insertUser">
+        insert into users(email, password, user_type, user_register_time)
+        values(#{email},#{password},#{userType},#{userRegisterTime})
+    </insert>-->
+
+    <insert id="addAddress">
+        insert into user_address(user_id, receiver_name,receiver_mobile,state,city,address,post_code,default_addr,create_time,update_time)
+        values (#{userId},#{receiverName},#{receiverMobile},#{state},#{city},#{address},#{postCode},#{defaultAddr},#{createTime},#{updateTime})
+    </insert>
+
+    <update id="removeDefaultAddress">
+        update user_address set default_addr=0
+        where user_id=#{userId}
+    </update>
+
+    <select id="queryAddressById" resultMap="addressMapper">
+        select addr_id,user_id, receiver_name,receiver_mobile, state, city,
+               address, post_code,default_addr, create_time, update_time
+        from user_address
+        where addr_id=#{addrId}
+    </select>
+
+    <update id="updateAddress">
+        update user_address
+        <set>
+            <if test="receiverName !=null and receiverName !=''">
+                receiver_name = #{receiverName},
+            </if>
+            <if test="receiverMobile !=null and receiverMobile !=''">
+                receiver_mobile = #{receiverMobile},
+            </if>
+            <if test="state !=null and state !=''">
+                state = #{state},
+            </if>
+            <if test="city !=null and city !=''">
+                city = #{city},
+            </if>
+            <if test="address !=null and address !=''">
+                address = #{address},
+            </if>
+            <if test="postCode !=null and postCode !=''">
+                post_code = #{postCode},
+            </if>
+            default_addr = #{defaultAddr},
+            update_time = #{updateTime}
+        </set>
+        <where>
+            addr_id = #{addrId}
+        </where>
+    </update>
+</mapper>

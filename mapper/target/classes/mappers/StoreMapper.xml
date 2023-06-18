@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.psm.petcare.dao.StoreDAO">
+
+
+
+<!--    <insert id="insertUser">-->
+<!--        insert into users(email, password, user_type, user_register_time)-->
+<!--        values(#{email},#{password},#{userType},#{userRegisterTime})-->
+<!--    </insert>-->
+
+    <insert id="insertStore">
+        insert into store(user_id,store_name, store_desc, state, city, address,store_status,store_img,create_time,update_time)
+        values(#{userId},#{storeName},#{StoreDesc},#{state},#{city},#{address},#{storeStatus},#{storeImg},#{createTime},#{updateTime})
+    </insert>
+
+    <resultMap id="storeMap" type="Store">
+        <id column="store_id" property="storeId"/>
+        <result column="user_id" property="userId"/>
+        <result column="store_name" property="storeName"/>
+        <result column="store_desc" property="StoreDesc"/>
+        <result column="state" property="state"/>
+        <result column="city" property="city"/>
+        <result column="address" property="address"/>
+        <result column="store_status" property="storeStatus"/>
+        <result column="store_img" property="storeImg"/>
+
+
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+
+    </resultMap>
+
+    <select id="queryStoreById" resultMap="storeMap">
+        select
+            store_id, user_id,store_name,store_desc,state,city,address,store_status,
+            store_img,create_time,update_time
+        from store
+        where user_id =#{userId}
+    </select>
+
+    <select id="queryStoreByStoreId" resultMap="storeMap">
+        select
+            store_id, user_id,store_name,store_desc,state,city,address,store_status,
+            store_img,create_time,update_time
+        from store
+        where store_id =#{storeId}
+    </select>
+
+    <select id="listAllStore" resultMap="storeMap">
+        select
+            store_id, user_id,store_name,store_desc,state,city,address,store_status,
+            store_img,create_time,update_time
+        from store
+    </select>
+
+    <select id="selectRandomStore" resultMap="storeMap">
+        select
+            store_id, user_id,store_name,store_desc, state,city,address,store_status,
+            store_img,create_time,update_time
+        from store
+        order by RAND()
+        LIMIT 3
+    </select>
+
+    <update id="deactiveStore">
+        update store
+        set store_status = 0
+        where store_id =#{storeId}
+    </update>
+
+
+    <update id="updateStore">
+        update store
+        <set>
+
+            <if test="storeName !=null and storeName !=''">
+                store_name = #{storeName},
+            </if>
+            <if test="StoreDesc !=null and StoreDesc !=''">
+                store_desc = #{StoreDesc},
+            </if>
+
+            <if test="state !=null and state !=''">
+                state = #{state},
+            </if>
+            <if test="city !=null and city !=''">
+                city = #{city},
+            </if>
+
+            <if test="address !=null and address !=''">
+                address = #{address},
+            </if>
+            <if test="storeImg !=null and storeImg !=''">
+                store_img = #{storeImg},
+            </if>
+
+            update_time=#{updateTime},
+        </set>
+
+        <where>
+            store_id =#{storeId}
+        </where>
+    </update>
+</mapper>

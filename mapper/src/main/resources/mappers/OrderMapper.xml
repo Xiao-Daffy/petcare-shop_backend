@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.psm.petcare.dao.OrderDAO">
+
+
+
+<!--    <insert id="addPet">-->
+<!--        insert into pet(owner_id, owner_name, store_id, pet_age,pet_gender, pet_weight, pet_length, pet_speciese, pet_img, full_vaccine, create_time,update_time)-->
+<!--        values(#{ownerId},#{ownerName},#{storeId},#{age},#{petGender},#{petWeight},#{petLength},#{petSpeciese},#{petImg},#{fullVaccine},#{createTime},#{updateTime})-->
+<!--    </insert>-->
+
+    <insert id="insertOrder">
+        insert into orders(order_id, user_id, receiver_name, receiver_mobile,receiver_address, total_amount,
+                           actual_amount, payment_method, order_status, create_time)
+        values (#{orderId}, #{userId}, #{receiverName},#{receiverMobile}, #{receiverAddress},
+                #{totalAmount}, #{actualAmount},#{paymentMethod}, #{orderStatus}, #{createTime})
+    </insert>
+
+    <resultMap id="orderMap" type="Order">
+        <id column="order_id" property="orderId"/>
+        <result column="user_id" property="userId"/>
+        <result column="receiver_name" property="receiverName"/>
+        <result column="receiver_mobile" property="receiverMobile"/>
+        <result column="receiver_address" property="receiverAddress"/>
+        <result column="total_amount" property="totalAmount"/>
+        <result column="actual_amount" property="actualAmount"/>
+        <result column="payment_method" property="paymentMethod"/>
+        <result column="order_remark" property="orderRemark"/>
+        <result column="close_type" property="closeType"/>
+        <result column="delivery_time" property="deliveryTime"/>
+        <result column="finish_time" property="finishTime"/>
+        <result column="paid_time" property="paidTime"/>
+        <result column="cancel_time" property="cancelTime"/>
+        <result column="order_status" property="orderStatus"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <resultMap id="orderVOMap" type="OrderVO">
+        <id column="order_id" property="orderId"/>
+        <result column="user_id" property="userId"/>
+        <result column="receiver_name" property="receiverName"/>
+        <result column="receiver_mobile" property="receiverMobile"/>
+        <result column="receiver_address" property="receiverAddress"/>
+        <result column="total_amount" property="totalAmount"/>
+        <result column="actual_amount" property="actualAmount"/>
+        <result column="payment_method" property="paymentMethod"/>
+        <result column="order_remark" property="orderRemark"/>
+        <result column="close_type" property="closeType"/>
+        <result column="delivery_time" property="deliveryTime"/>
+        <result column="finish_time" property="finishTime"/>
+        <result column="paid_time" property="paidTime"/>
+        <result column="cancel_time" property="cancelTime"/>
+        <result column="order_status" property="orderStatus"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+
+        <result column="item_id" property="itemId"/>
+
+        <result column="store_id" property="storeId"/>
+        <result column="product_id" property="productId"/>
+        <result column="product_name" property="productName"/>
+        <result column="product_img" property="productImg"/>
+        <result column="product_price" property="productPrice"/>
+        <result column="buy_counts" property="buyCounts"/>
+        <result column="cart_date" property="cartDate"/>
+        <result column="buy_time" property="buyTime"/>
+        <result column="is_comment" property="isComment"/>
+
+        <result column="store_name" property="storeName"/>
+
+        <result column="ship_id" property="shipId"/>
+        <result column="ship_number" property="shipNumber"/>
+        <result column="receiver_time" property="receiverTime"/>
+    </resultMap>
+
+    <select id="getOrderById" resultMap="orderMap">
+        select order_id,user_id, receiver_name,receiver_mobile,receiver_address,
+               total_amount,actual_amount,payment_method,order_remark,close_type,
+               delivery_time,finish_time,paid_time,cancel_time,order_status,create_time,
+               update_time
+        from orders
+        where order_id =#{orderId}
+    </select>
+
+    <select id="getListOrderToPay" resultMap="orderMap">
+        select order_id,user_id, receiver_name,receiver_mobile,receiver_address,
+               total_amount,actual_amount,payment_method,order_remark,close_type,
+               delivery_time,finish_time,paid_time,cancel_time,order_status,create_time,
+               update_time
+        from orders
+        where order_status ='To Pay' and NOW() - interval 30 minute >= create_time;
+    </select>
+
+    <update id="updateOrderStatusByOrderId">
+        update orders
+        <set>
+            order_status=#{orderStatus},
+            paid_time = #{paidTime},
+        </set>
+        where order_id =#{orderId}
+    </update>
+
+    <update id="updateOrderStatusToComplete">
+        update orders
+        <set>
+            order_status=#{orderStatus},
+            finish_time = #{finishTime},
+        </set>
+        where order_id =#{orderId}
+    </update>
+
+    <update id="updateOrderStatusToComment">
+        update orders
+        <set>
+            order_status='To Comment',
+            update_time = #{updateTime},
+        </set>
+        where order_id =#{orderId}
+    </update>
+
+    <update id="updateOrderStatusByOrderId2">
+        update orders set order_status=#{orderStatus} where order_id =#{orderId}
+    </update>
+
+
+    <update id="closeOrderForTimeout">
+        update orders
+        <set>
+            close_type=#{closeType},
+            order_status=#{orderStatus},
+            cancel_time = #{cancelTime},
+            update_time = #{updateTime},
+        </set>
+        where order_id =#{orderId}
+    </update>
+
+
+<!--    <select id="queryListOrderVOByUserId" resultMap="orderVOMap">-->
+<!--        select o.order_id,o.user_id, o.receiver_name,o.receiver_mobile,o.receiver_address,-->
+<!--               o.total_amount,o.actual_amount,o.payment_method,o.order_remark,o.close_type,-->
+<!--               o.delivery_time,o.finish_time,o.paid_time,o.cancel_time,o.order_status,o.create_time,-->
+<!--               oi.item_id, oi.store_id, oi.product_id,oi.product_name,oi.product_img,oi.product_price,-->
+<!--                oi.buy_counts, oi.buy_time,s.store_name-->
+
+<!--        from orders o-->
+<!--        inner join order_item oi-->
+<!--        on o.order_id = oi.order_id-->
+<!--        inner join store s-->
+<!--        on oi.store_id = s.store_id-->
+<!--        where o.user_id = #{userId}-->
+<!--    </select>-->
+
+
+    <select id="queryListOrderVOByUserId" resultMap="orderVOMap">
+        select o.order_id,o.user_id, o.receiver_name,o.receiver_mobile,o.receiver_address,
+               o.total_amount,o.actual_amount,o.payment_method,o.order_remark,o.close_type,
+               o.delivery_time,o.finish_time,o.paid_time,o.cancel_time,o.order_status,o.create_time,
+               oi.item_id, oi.store_id, oi.product_id,oi.product_name,oi.product_img,oi.product_price,
+               oi.buy_counts, oi.buy_time,s.store_name,sh.ship_number
+
+        from orders o
+                 inner join order_item oi
+                            on o.order_id = oi.order_id
+                 inner join store s
+                            on oi.store_id = s.store_id
+                 left join ship sh
+                           on oi.item_id = sh.order_item_id
+        where o.user_id = #{userId}
+    </select>
+
+
+
+    <select id="queryOneOrderVOByItemId" resultMap="orderVOMap">
+        select o.order_id,o.user_id, o.receiver_name,o.receiver_mobile,o.receiver_address,
+               o.total_amount,o.actual_amount,o.payment_method,o.order_remark,o.close_type,
+               o.delivery_time,o.finish_time,o.paid_time,o.cancel_time,o.order_status,o.create_time,
+               oi.item_id, oi.store_id, oi.product_id,oi.product_name,oi.product_img,oi.product_price,
+               oi.buy_counts, oi.buy_time,s.store_name
+
+        from orders o
+        inner join order_item oi
+        on o.order_id = oi.order_id
+        inner join store s
+        on oi.store_id = s.store_id
+        where oi.item_id = #{itemId}
+    </select>
+
+    <select id="queryOrderVOsByStoreId" resultMap="orderVOMap">
+        select o.order_id,o.user_id, o.receiver_name,o.receiver_mobile,o.receiver_address,
+               o.total_amount,o.actual_amount,o.payment_method,o.order_remark,o.close_type,
+               o.delivery_time,o.finish_time,o.paid_time,o.cancel_time,o.order_status,o.create_time,
+               oi.item_id, oi.store_id, oi.product_id,oi.product_name,oi.product_img,oi.product_price,
+               oi.buy_counts, oi.buy_time,s.store_name, sh.ship_number
+
+        from orders o
+        inner join order_item oi
+        on o.order_id = oi.order_id
+        inner join store s
+        on oi.store_id = s.store_id
+        left join ship sh
+        on oi.item_id = sh.order_item_id
+        where oi.store_id = #{storeId}
+    </select>
+
+
+    <select id="queryBestSaleProduct" resultMap="orderVOMap">
+        select DISTINCT  oi.store_id, oi.product_id,oi.product_name,oi.product_img,oi.product_price
+        from orders o
+        inner join order_item oi
+        on o.order_id = oi.order_id
+        limit 3
+    </select>
+
+
+<!--    Data Analysis-->
+    <select id="monthlyProduceSale" resultMap="orderVOMap">
+        SELECT
+        DATE_FORMAT(o.create_time, '%Y-%m') AS receiver_name,
+        SUM(o.actual_amount) AS actual_amount
+        FROM
+            orders o
+            INNER JOIN order_item oi ON o.order_id = oi.order_id
+        WHERE
+            oi.store_id = #{storeId}
+            AND o.order_status NOT IN ('Pending', 'Canceled')
+            AND o.create_time >= DATE_SUB(CURRENT_DATE, INTERVAL 12 MONTH)
+        GROUP BY
+            DATE_FORMAT(o.create_time, '%Y-%m')
+        ORDER BY
+            DATE_FORMAT(o.create_time, '%Y-%m');
+    </select>
+
+
+    <select id="fiveRecentOrder" resultMap="orderVOMap">
+        SELECT
+            o.receiver_name,o.order_status,o.create_time,
+            oi.product_name
+        FROM
+            orders o
+                INNER JOIN order_item oi ON o.order_id = oi.order_id
+        WHERE
+            oi.store_id = #{storeId}
+        ORDER BY
+            CASE o.order_status
+                WHEN 'To Pay' THEN 1
+                WHEN 'To Ship' THEN 2
+                WHEN 'To Receive' THEN 3
+                WHEN 'To Comment' THEN 4
+                WHEn 'Commented' THEN 5
+                WHEN 'Completed' THEN 6
+                WHEN 'Canceled' THEN 7
+                ELSE 8
+                END,
+            o.create_time
+            LIMIT 5;
+
+    </select>
+
+
+    <select id="bestSoldProduct" resultMap="orderVOMap">
+        SELECT
+            oi.product_name,
+            SUM(oi.buy_counts) AS buy_counts,
+            SUM(oi.total_amount) AS total_amount
+        FROM
+            order_item oi
+                JOIN orders o ON oi.order_id = o.order_id
+        WHERE
+            oi.store_id = #{storeId}
+          AND o.order_status NOT IN ('To Pay', 'Canceled')
+        GROUP BY
+            oi.product_id
+        ORDER BY
+            buy_counts DESC
+            LIMIT 1;
+    </select>
+
+    <select id="topFiveSoldProduct" resultMap="orderVOMap">
+        SELECT
+            oi.product_name,
+            SUM(oi.buy_counts) AS buy_counts,
+            SUM(oi.total_amount) AS total_amount
+        FROM
+            order_item oi
+                JOIN orders o ON oi.order_id = o.order_id
+        WHERE
+            oi.store_id = #{storeId}
+          AND o.order_status NOT IN ('To Pay', 'Canceled')
+          AND o.create_time >= CURDATE() - INTERVAL 30 DAY
+        GROUP BY
+            oi.product_id
+        ORDER BY
+            buy_counts DESC
+            LIMIT 5;
+    </select>
+
+    <select id="currentMonthDailyProfit" resultMap="orderVOMap">
+        SELECT DAY(o.create_time) AS receiver_name,
+            SUM(oi.total_amount) AS total_amount
+        FROM order_item oi
+            JOIN orders o ON oi.order_id = o.order_id
+        WHERE oi.store_id = #{storeId}
+          AND o.order_status NOT IN ('To Pay', 'Canceled')
+          AND MONTH(o.create_time) = MONTH(CURRENT_DATE())
+          AND YEAR(o.create_time) = YEAR(CURRENT_DATE())
+        GROUP BY DAY(o.create_time)
+        ORDER BY DAY(o.create_time) ASC;
+
+    </select>
+
+
+    <select id="lastMonthDailyProfit" resultMap="orderVOMap">
+
+        SELECT DAY(o.create_time) AS receiver_name,
+            SUM(oi.total_amount) AS total_amount
+        FROM order_item oi
+            JOIN orders o ON oi.order_id = o.order_id
+        WHERE oi.store_id = #{storeId}
+          AND o.order_status NOT IN ('To Pay', 'Canceled')
+          AND o.create_time &gt;= DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH)
+          AND o.create_time &lt; DATE_FORMAT(CURDATE(), '%Y-%m-01')
+        GROUP BY DAY(o.create_time)
+        ORDER BY DAY(o.create_time) ASC;
+
+    </select>
+
+    <select id="totalSale" resultMap="orderVOMap">
+        SELECT SUM(oi.total_amount) AS total_amount,
+               SUM(oi.buy_counts) AS buy_counts,
+               COUNT(DISTINCT MONTH(create_time)) AS product_id <!-- product_id as number of different month-->
+        FROM order_item oi
+        JOIN orders o ON o.order_id = oi.order_id
+        WHERE oi.store_id = #{storeId} AND o.order_status NOT IN ('To Pay', 'Canceled');
+
+    </select>
+</mapper>

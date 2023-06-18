@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>petcare</artifactId>
+        <groupId>com.psm</groupId>
+        <version>1.0.1</version>
+    </parent>
+
+
+    <artifactId>api</artifactId>
+    <!--    Dependencies needed for api Maven project-->
+    <dependencies>
+
+        <!-- service -->
+        <dependency>
+            <groupId>com.psm</groupId>
+            <artifactId>service</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+        <!-- spring-boot-starter-web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- spring-boot-starter-test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-websocket -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+
+        </dependency>
+
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/com.microsoft.azure/azure-storage &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.microsoft.azure</groupId>-->
+<!--            <artifactId>azure-storage</artifactId>-->
+<!--            <version>8.6.6</version>-->
+<!--        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/com.microsoft.azure/azure-storage-blob -->
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-storage-blob</artifactId>
+            <version>12.12.0</version>
+        </dependency>
+
+    </dependencies>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
+
+</project>
